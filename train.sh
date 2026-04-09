@@ -14,7 +14,7 @@ if command -v nvidia-smi &> /dev/null && nvidia-smi --list-gpus &> /dev/null; th
   else
     NPROC_PER_NODE=${NPROC_PER_NODE:=$(nvidia-smi --list-gpus | wc -l)}
   fi
-  export NCCL_DEBUG=WARN
+  export NCCL_DEBUG=INFO
 else
   # NPU
   if [[ -n "${ASCEND_RT_VISIBLE_DEVICES}" ]]; then
@@ -40,4 +40,5 @@ torchrun \
   --nnodes=$NNODES \
   --nproc-per-node=$NPROC_PER_NODE \
   --node-rank=$NODE_RANK \
+  --rdzv-backend=c10d \
   $additional_args $@ 2>&1 | tee log.txt
